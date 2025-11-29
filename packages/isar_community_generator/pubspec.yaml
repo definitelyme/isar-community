@@ -38,4 +38,6 @@ dev_dependencies:
 
 dependency_overrides:
   isar_community:
-    path: ../isar_community
+    git:
+      url: https://github.com/definitelyme/isar-community.git
+      path: packages/isar_community/
