@@ -5,13 +5,13 @@ import 'package:dartx/dartx.dart';
 import 'package:isar_community/isar.dart';
 import 'package:source_gen/source_gen.dart';
 
-const TypeChecker _collectionChecker = TypeChecker.typeNamed(Collection);
-const TypeChecker _enumeratedChecker = TypeChecker.typeNamed(Enumerated);
-const TypeChecker _embeddedChecker = TypeChecker.typeNamed(Embedded);
-const TypeChecker _ignoreChecker = TypeChecker.typeNamed(Ignore);
-const TypeChecker _nameChecker = TypeChecker.typeNamed(Name);
-const TypeChecker _indexChecker = TypeChecker.typeNamed(Index);
-const TypeChecker _backlinkChecker = TypeChecker.typeNamed(Backlink);
+const TypeChecker _collectionChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Collection');
+const TypeChecker _enumeratedChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Enumerated');
+const TypeChecker _embeddedChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Embedded');
+const TypeChecker _ignoreChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Ignore');
+const TypeChecker _nameChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Name');
+const TypeChecker _indexChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Index');
+const TypeChecker _backlinkChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Backlink');
 
 extension ClassElementX on ClassElement2 {
   bool get hasZeroArgsConstructor {
@@ -87,9 +87,9 @@ extension PropertyElementX on PropertyInducingElement2 {
       final composite = <CompositeIndex>[];
       if (rawComposite != null) {
         for (final c in rawComposite) {
-          final indexTypeField = c.getField('type')!;
+          final indexTypeField = c.getField('type');
           IndexType? indexType;
-          if (!indexTypeField.isNull) {
+          if (indexTypeField != null && !indexTypeField.isNull) {
             final indexTypeIndex = indexTypeField.getField('index')!.toIntValue()!;
             indexType = IndexType.values[indexTypeIndex];
           }
@@ -97,24 +97,24 @@ extension PropertyElementX on PropertyInducingElement2 {
             CompositeIndex(
               c.getField('property')!.toStringValue()!,
               type: indexType,
-              caseSensitive: c.getField('caseSensitive')!.toBoolValue(),
+              caseSensitive: c.getField('caseSensitive')?.toBoolValue(),
             ),
           );
         }
       }
-      final indexTypeField = ann.getField('type')!;
+      final indexTypeField = ann.getField('type');
       IndexType? indexType;
-      if (!indexTypeField.isNull) {
+      if (indexTypeField != null && !indexTypeField.isNull) {
         final indexTypeIndex = indexTypeField.getField('index')!.toIntValue()!;
         indexType = IndexType.values[indexTypeIndex];
       }
       return Index(
-        name: ann.getField('name')!.toStringValue(),
+        name: ann.getField('name')?.toStringValue(),
         composite: composite,
         unique: ann.getField('unique')!.toBoolValue()!,
         replace: ann.getField('replace')!.toBoolValue()!,
         type: indexType,
-        caseSensitive: ann.getField('caseSensitive')!.toBoolValue(),
+        caseSensitive: ann.getField('caseSensitive')?.toBoolValue(),
       );
     }).toList();
   }
@@ -140,7 +140,7 @@ extension ElementX on Element2 {
     }
     return Collection(
       inheritance: ann.getField('inheritance')!.toBoolValue()!,
-      accessor: ann.getField('accessor')!.toStringValue(),
+      accessor: ann.getField('accessor')?.toStringValue(),
       ignore: ann.getField('ignore')!.toSetValue()!.map((e) => e.toStringValue()!).toSet(),
     );
   }
