@@ -5,26 +5,23 @@ import 'package:dartx/dartx.dart';
 import 'package:isar_community/isar.dart';
 import 'package:source_gen/source_gen.dart';
 
-const TypeChecker _collectionChecker = TypeChecker.fromRuntime(Collection);
-const TypeChecker _enumeratedChecker = TypeChecker.fromRuntime(Enumerated);
-const TypeChecker _embeddedChecker = TypeChecker.fromRuntime(Embedded);
-const TypeChecker _ignoreChecker = TypeChecker.fromRuntime(Ignore);
-const TypeChecker _nameChecker = TypeChecker.fromRuntime(Name);
-const TypeChecker _indexChecker = TypeChecker.fromRuntime(Index);
-const TypeChecker _backlinkChecker = TypeChecker.fromRuntime(Backlink);
+const TypeChecker _collectionChecker = TypeChecker.typeNamed(Collection);
+const TypeChecker _enumeratedChecker = TypeChecker.typeNamed(Enumerated);
+const TypeChecker _embeddedChecker = TypeChecker.typeNamed(Embedded);
+const TypeChecker _ignoreChecker = TypeChecker.typeNamed(Ignore);
+const TypeChecker _nameChecker = TypeChecker.typeNamed(Name);
+const TypeChecker _indexChecker = TypeChecker.typeNamed(Index);
+const TypeChecker _backlinkChecker = TypeChecker.typeNamed(Backlink);
 
 extension ClassElementX on ClassElement2 {
   bool get hasZeroArgsConstructor {
     return constructors2.any(
-      (c) =>
-          c.isPublic &&
-          !c.formalParameters.any((FormalParameterElement p) => !p.isOptional),
+      (c) => c.isPublic && !c.formalParameters.any((FormalParameterElement p) => !p.isOptional),
     );
   }
 
   List<PropertyInducingElement2> get allAccessors {
-    final ignoreFields =
-        collectionAnnotation?.ignore ?? embeddedAnnotation!.ignore;
+    final ignoreFields = collectionAnnotation?.ignore ?? embeddedAnnotation!.ignore;
     final accessors = [...setters2, ...getters2];
     return [
       ...accessors.mapNotNull((e) => e.variable3),
@@ -39,21 +36,14 @@ extension ClassElementX on ClassElement2 {
     ]
         .where(
           (PropertyInducingElement2 e) =>
-              e.isPublic &&
-              !e.isStatic &&
-              !_ignoreChecker.hasAnnotationOf(e.nonSynthetic2) &&
-              !ignoreFields.contains(e.name3),
+              e.isPublic && !e.isStatic && !_ignoreChecker.hasAnnotationOf(e.nonSynthetic2) && !ignoreFields.contains(e.name3),
         )
         .distinctBy((e) => e.name3)
         .toList();
   }
 
   List<String> get enumConsts {
-    return fields2
-        .where((e) => e.isEnumConstant)
-        .filter((e) => e.name3 != null)
-        .map((e) => e.name3!)
-        .toList();
+    return fields2.where((e) => e.isEnumConstant).filter((e) => e.name3 != null).map((e) => e.name3!).toList();
   }
 }
 
@@ -100,8 +90,7 @@ extension PropertyElementX on PropertyInducingElement2 {
           final indexTypeField = c.getField('type')!;
           IndexType? indexType;
           if (!indexTypeField.isNull) {
-            final indexTypeIndex =
-                indexTypeField.getField('index')!.toIntValue()!;
+            final indexTypeIndex = indexTypeField.getField('index')!.toIntValue()!;
             indexType = IndexType.values[indexTypeIndex];
           }
           composite.add(
@@ -152,11 +141,7 @@ extension ElementX on Element2 {
     return Collection(
       inheritance: ann.getField('inheritance')!.toBoolValue()!,
       accessor: ann.getField('accessor')!.toStringValue(),
-      ignore: ann
-          .getField('ignore')!
-          .toSetValue()!
-          .map((e) => e.toStringValue()!)
-          .toSet(),
+      ignore: ann.getField('ignore')!.toSetValue()!.map((e) => e.toStringValue()!).toSet(),
     );
   }
 
@@ -181,11 +166,7 @@ extension ElementX on Element2 {
     }
     return Embedded(
       inheritance: ann.getField('inheritance')!.toBoolValue()!,
-      ignore: ann
-          .getField('ignore')!
-          .toSetValue()!
-          .map((e) => e.toStringValue()!)
-          .toSet(),
+      ignore: ann.getField('ignore')!.toSetValue()!.map((e) => e.toStringValue()!).toSet(),
     );
   }
 }

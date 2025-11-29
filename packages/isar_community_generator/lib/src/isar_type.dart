@@ -4,7 +4,7 @@ import 'package:isar_community/isar.dart';
 import 'package:isar_community_generator/src/helper.dart';
 import 'package:source_gen/source_gen.dart';
 
-const TypeChecker _dateTimeChecker = TypeChecker.fromRuntime(DateTime);
+const TypeChecker _dateTimeChecker = TypeChecker.typeNamed(DateTime);
 bool _isDateTime(Element2 element) => _dateTimeChecker.isExactly(element);
 
 extension DartTypeX on DartType {
@@ -90,18 +90,11 @@ extension DartTypeX on DartType {
 extension IsarTypeX on IsarType {
   bool get containsBool => this == IsarType.bool || this == IsarType.boolList;
 
-  bool get containsFloat =>
-      this == IsarType.float ||
-      this == IsarType.floatList ||
-      this == IsarType.double ||
-      this == IsarType.doubleList;
+  bool get containsFloat => this == IsarType.float || this == IsarType.floatList || this == IsarType.double || this == IsarType.doubleList;
 
-  bool get containsDate =>
-      this == IsarType.dateTime || this == IsarType.dateTimeList;
+  bool get containsDate => this == IsarType.dateTime || this == IsarType.dateTimeList;
 
-  bool get containsString =>
-      this == IsarType.string || this == IsarType.stringList;
+  bool get containsString => this == IsarType.string || this == IsarType.stringList;
 
-  bool get containsObject =>
-      this == IsarType.object || this == IsarType.objectList;
+  bool get containsObject => this == IsarType.object || this == IsarType.objectList;
 }
