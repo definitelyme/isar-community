@@ -16,6 +16,10 @@ import 'package:isar_community_generator/src/code_gen/type_adapter_generator.dar
 import 'package:isar_community_generator/src/isar_analyzer.dart';
 import 'package:source_gen/source_gen.dart';
 
+// Package-specific TypeCheckers to avoid conflicts with other packages
+const _collectionChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Collection');
+const _embeddedChecker = TypeChecker.fromUrl('package:isar_community/isar.dart#Embedded');
+
 const ignoreLints = [
   'duplicate_ignore',
   'non_constant_identifier_names',
@@ -43,6 +47,11 @@ class IsarCollectionGenerator extends GeneratorForAnnotation<Collection> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
+    // Skip if this is not an Isar Collection (e.g., from cloud_firestore_odm)
+    if (!_collectionChecker.hasAnnotationOfExact(element)) {
+      return '';
+    }
+
     final object = IsarAnalyzer().analyzeCollection(element);
     return '''
       // coverage:ignore-file
@@ -84,6 +93,11 @@ class IsarEmbeddedGenerator extends GeneratorForAnnotation<Embedded> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
+    // Skip if this is not an Isar Embedded (e.g., from other packages)
+    if (!_embeddedChecker.hasAnnotationOfExact(element)) {
+      return '';
+    }
+
     final object = IsarAnalyzer().analyzeEmbedded(element);
     return '''
       // coverage:ignore-file
